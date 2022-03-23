@@ -45,7 +45,7 @@ func (mixin *Mixin) PersistSnapshot(snapshot proto.Message) {
 	mixin.providerState.PersistSnapshot(mixin.Name(), mixin.eventIndex, snapshot)
 }
 
-func (mixin *Mixin) Init(provider Provider, context actor.Context) {
+func (mixin *Mixin) InitV2(provider Provider, context actor.Context) {
 	init(provider, context)	
 }
 
