@@ -5,7 +5,7 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
-type persistent interface {
+type Persistent interface {
 	init(provider Provider, context actor.Context)
 	PersistReceive(message proto.Message)
 	PersistSnapshot(snapshot proto.Message)
@@ -23,7 +23,7 @@ type Mixin struct {
 
 // enforces that Mixin implements persistent interface
 // (if they diverge, code breaks in other packages)
-var _ persistent = (*Mixin)(nil)
+var _ Persistent = (*Mixin)(nil)
 
 func (mixin *Mixin) Recovering() bool {
 	return mixin.recovering
@@ -46,7 +46,7 @@ func (mixin *Mixin) PersistSnapshot(snapshot proto.Message) {
 }
 
 func (mixin *Mixin) InitV2(provider Provider, context actor.Context) {
-	mixin.init(provider, context)	
+	mixin.init(provider, context)
 }
 
 func (mixin *Mixin) init(provider Provider, context actor.Context) {

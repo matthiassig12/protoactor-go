@@ -7,6 +7,10 @@ import (
 	"github.com/AsynkronIT/protoactor-go/actor"
 )
 
+type PersistenceProvider interface {
+	Persistent() Persistent
+}
+
 func Using(provider Provider) func(next actor.ReceiverFunc) actor.ReceiverFunc {
 	return func(next actor.ReceiverFunc) actor.ReceiverFunc {
 		fn := func(ctx actor.ReceiverContext, env *actor.MessageEnvelope) {
@@ -17,9 +21,9 @@ func Using(provider Provider) func(next actor.ReceiverFunc) actor.ReceiverFunc {
 				next(ctx, env)
 
 				//check if the actor is persistent
-				if p, ok := ctx.Actor().(persistent); ok {
+				if p, ok := ctx.Actor().(PersistenceProvider); ok {
 					//initialize it
-					p.init(provider, ctx.(actor.Context))
+					p.Persistent().init(provider, ctx.(actor.Context))
 				} else {
 					//not an persistent actor, bail out
 					log.Fatalf("Actor type %v is not persistent", reflect.TypeOf(ctx.Actor()))
